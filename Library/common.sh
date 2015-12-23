@@ -4,6 +4,22 @@ function get-fullpath {
   echo $(cd $(dirname $0); pwd)
 }
 
+function warn {
+  # color:yellow
+  echo -e "\033[33mWarning\033[m" "$*"
+}
+
+function error {
+  # color:red
+  echo -e "\033[31mError\033[m" "$*"
+  exit -1
+}
+
+function success {
+  # color:green
+  echo -e "\033[32mSuccess\033[m" "$*"
+}
+
 function wget {
   if command wget -h &>/dev/null; then
     command wget "$@"
@@ -49,22 +65,24 @@ function find-workspace {
   if [ -e setup.ini ]; then
     return 0
   else
+    warn "setup.ini is not exist, getting from ftp://$mirror"
     get-setup
-    return 1
+    return $?
   fi
 }
 
 function get-setup {
   mv setup.ini setup.ini-save &> /dev/null
-  test $? != 0 && echo "setup.ini is not exist, getting from ftp://$mirror"
   wget -N "ftp://$mirror/$arch/setup.bz2"
   if [ -e setup.bz2 ]; then
     bunzip2 setup.bz2
     mv setup setup.ini
-    echo Updated setup.ini
+    success "Updated setup.ini"
+    return 0
   else
-    echo "Error updating setup.ini, reverting"
+    error "Error updating setup.ini, reverting"
     mv setup.ini-save setup.ini
+    return 1
   fi
 }
 
