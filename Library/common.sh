@@ -24,56 +24,52 @@ function wget {
   if command wget -h &>/dev/null; then
     command wget "$@"
   else
-    warn wget is not installed, using lynx as fallback
+    warn "wget is not installed, using lynx as fallback"
     set "${*: -1}"
     lynx -source "$1" > "${1##*/}"
   fi
 }
 
+function crew-cache-dir {
+  local cache_dir=$CREW_CACHE
+  local mirror_dir=$(
+    awk '
+      /last-mirror/ {
+        getline
+        print $1
+      }
+      ' "$SETUP_DIR/setup.rc" |\
+    sed -e 's,ftp://,,' -e 's,http://,,' -e 's,/$,,' )
+  echo "$cache_dir/$mirror_dir"
+}
+
 function find-workspace {
   # default working directory and mirror
-  test $mirror || mirror="ftp.iij.ad.jp/pub/cygwin"
-  test $cache  || cache="$CREW_DIR/crew-cache"
-  arch="$(uname -m)"
+  local mirror=$(crew-mirror | sed -e 's,/$,,')
+  local cache_dir=$(crew-cache-dir)
+  local arch_dir=$(uname -m)
 
-  echo "workspace: $cache/$mirror/$arch"
-  
-  # # work wherever setup worked last, if possible
-  # cache=$(awk '
-  # BEGIN {
-  #   RS = "\n\\<"
-  #   FS = "\n\t"
-  # }
-  # $1 == "last-cache" {
-  #   print $2
-  # }
-  # ' /etc/setup/setup.rc)
+  echo "workspace: $cache_dir/$arch_dir"
+  echo "mirror: $mirror"
 
-  # mirror=$(awk '
-  # /last-mirror/ {
-  #   getline
-  #   print $1
-  # }
-  # ' /etc/setup/setup.rc)
-  # mirrordir=$(sed '
-  # s / %2f g
-  # s : %3a g
-  # ' <<< "$mirror")
+  mkdir -p "$cache_dir/$arch_dir"
+  cd "$cache_dir/$arch_dir"
 
-  mkdir -p "$cache/$mirror/$arch"
-  cd "$cache/$mirror/$arch"
   if [ -e setup.ini ]; then
     return 0
   else
-    warn "setup.ini is not exist, getting from ftp://$mirror"
-    get-setup
-    return $?
+    warn "setup.ini is not exist, getting from $mirror"
+    get-setup-file
+    return 1
   fi
 }
 
-function get-setup {
+function get-setup-file {
+  local mirror=$(crew-mirror | sed -e 's,/$,,')
+  local arch=$(uname -m)
+  echo "fetch $mirror/$arch/setup.bz2"
   mv setup.ini setup.ini-save &> /dev/null
-  wget -N "ftp://$mirror/$arch/setup.bz2"
+  wget -N "$mirror/$arch/setup.bz2"
   if [ -e setup.bz2 ]; then
     bunzip2 setup.bz2
     mv setup setup.ini

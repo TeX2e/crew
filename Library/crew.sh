@@ -5,11 +5,11 @@
 
 ROOT_DIR="$HOME/Documents/pgm/bash/cygwin64"
 CREW_DIR="$ROOT_DIR/usr/local"
-CREW_LIBRARY="$CREW_DIR/Library"
 CREW_CELLER="$CREW_DIR/Celler"
-# $mirror
-# $cache
+CREW_LIBRARY="$CREW_DIR/Library"
+CREW_FORMULA="$CREW_DIR/Library/Formula"
 SETUP_DIR="$ROOT_DIR/etc/setup"
+CREW_CACHE="$CREW_DIR/crew-cache"
 
 function include {
   for file in $@; do
