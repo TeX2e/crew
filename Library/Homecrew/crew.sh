@@ -17,7 +17,7 @@ function include {
   done
 }
 
-include "$CREW_LIBRARY/common.sh"
+include "$CREW_LIBRARY/Homecrew/common.sh"
 include "$CREW_LIBRARY/Homecrew/cmd/*.sh"
 
 function crew-debug {
