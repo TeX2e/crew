@@ -21,8 +21,7 @@ function crew-download {
 
   awk '$1 == pc' RS='\n\n@ ' FS='\n' pc="$pkg" "$cache_dir/$arch_dir/setup.ini" > "$cache_dir/$arch_dir/desc"
   if [ ! -s "$cache_dir/$arch_dir/desc" ]; then
-    echo Unable to locate package $pkg
-    exit 1
+    error "Unable to locate package $pkg"
   fi
 
   # download and unpack the bz2 or xz file
@@ -31,14 +30,12 @@ function crew-download {
   set -- $(awk '$1 == "install:"' "$cache_dir/$arch_dir/desc")
 
   if (( ! $# )); then
-    echo 'Could not find "install" in package description: obsolete package?'
-    exit 1
+    error 'Could not find "install" in package description: obsolete package?'
   fi
 
   local download_dir=$(dirname $2)
   local download_file=$(basename $2)
   
-
   # check the md5
   digest=$4
   case ${#digest} in
@@ -52,16 +49,17 @@ function crew-download {
   if ! [ -e "$download_file" ] || ! $hash -c <<< "$digest $download_file" &>/dev/null; then
     echo "fetch $mirror/$download_dir/$download_file"
     wget -O "$download_file" "$mirror/$download_dir/$download_file"
-    $hash -c <<< "$digest $download_file" || exit
+    $hash -c <<< "$digest $download_file" &>/dev/null || exit
   fi
 
-  mkdir -p "$CREW_FORMULA/$pkg"
-  tar tf "$download_file" | gzip > "$CREW_FORMULA/$pkg/$pkg.lst.gz"
-  echo "download file is put on $CREW_FORMULA/$pkg/$pkg.lst.gz"
+  # decompress
+  # xz -cdv "${download_file}" > "${download_file%.xz}"
+  # tar -xf "${download_file%.xz}"
+  # local download_file_with_version=${download_file%.tar.xz}
+  # mkdir -p "$CREW_FORMULA/$pkg"
+  # tar tf "$download_file" | gzip > "$CREW_FORMULA/$pkg/$download_file_with_version.lst.gz"
 
-  # cd ~-
-  # mv "$cache_dir/desc" "$cache/$mirrordir/$download_dir"
-  # echo "$download_dir $download_file" > /tmp/dwn
+  echo "download to: $cache_dir/$download_dir/$download_file"
 }
 
 
