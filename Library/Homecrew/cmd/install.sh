@@ -19,7 +19,8 @@ function crew-install { # <packages>
     # decompress
     xz -cdv "$pkg_version.tar.xz" > "$pkg_version.tar"
     tar -x -C "$CREW_CELLER/$pkg/$pkg_version" -f "$pkg_version.tar"
-    tar tf "$pkg_version.tar.xz" | gzip > "$pkg_version.lst.gz"
+    tar tf "$pkg_version.tar.xz" > "$pkg_version.lst"
+    # tar tf "$pkg_version.tar.xz" | gzip > "$pkg_version.lst.gz"
 
     rm "$pkg_version.tar"
   done
