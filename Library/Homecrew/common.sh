@@ -4,6 +4,16 @@ function get-fullpath {
   echo $(cd $(dirname $0); pwd)
 }
 
+# use to tell strong message
+function notice {
+  echo "[Notice]" "$*"
+}
+
+# use to tell weak message
+function info {
+  echo "[Info]" "$*"
+}
+
 function warn {
   # color:yellow
   echo -e "\033[33mWarning\033[m" "$*"
@@ -30,23 +40,23 @@ function wget {
   fi
 }
 
-function crew-cache-dir {
-  local cache_dir=$CREW_CACHE
-  local mirror_dir=$(
-    awk '
-      /last-mirror/ {
-        getline
-        print $1
-      }
-      ' "$SETUP_DIR/setup.rc" |\
-    sed -e 's,ftp://,,' -e 's,http://,,' -e 's,/$,,' )
-  echo "$cache_dir/$mirror_dir"
-}
+# function crew-cache-dir {
+#   local cache_dir=$CREW_CACHE
+#   local mirror_dir=$(
+#     awk '
+#       /last-mirror/ {
+#         getline
+#         print $1
+#       }
+#       ' "$SETUP_DIR/setup.rc" |\
+#     sed -e 's,ftp://,,' -e 's,http://,,' -e 's,/$,,' )
+#   echo "$cache_dir/$mirror_dir"
+# }
 
 function find-workspace {
   # default working directory and mirror
   local mirror=$(crew-mirror | sed -e 's,/$,,')
-  local cache_dir=$(crew-cache-dir)
+  local cache_dir=$CREW_CACHE
   local arch_dir=$(uname -m)
 
   echo "workspace: $cache_dir/$arch_dir"

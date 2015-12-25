@@ -6,9 +6,9 @@ function crew-update {
   fi
 }
 
-function crew-download {
+function download { # <package>
   local pkg digest digactual
-  local cache_dir=$(crew-cache-dir)
+  local cache_dir=$CREW_CACHE
   local arch_dir=$(uname -m)
   local mirror=$(crew-mirror | sed -e 's,/$,,')
   local pkg=$1
@@ -19,7 +19,13 @@ function crew-download {
   
   # look for package and save desc file
 
-  awk '$1 == pc' RS='\n\n@ ' FS='\n' pc="$pkg" "$cache_dir/$arch_dir/setup.ini" > "$cache_dir/$arch_dir/desc"
+  if find-workspace; then
+    get-setup-file
+  fi
+
+  awk '$1 == pc' RS='\n\n@ ' FS='\n' pc="$pkg" "$cache_dir/$arch_dir/setup.ini" \
+    > "$cache_dir/$arch_dir/desc"
+
   if [ ! -s "$cache_dir/$arch_dir/desc" ]; then
     error "Unable to locate package $pkg"
   fi
@@ -47,7 +53,7 @@ function crew-download {
   cd "$cache_dir/$download_dir"
 
   if ! [ -e "$download_file" ] || ! $hash -c <<< "$digest $download_file" &>/dev/null; then
-    echo "fetch $mirror/$download_dir/$download_file"
+    info "fetch $mirror/$download_dir/$download_file"
     wget -O "$download_file" "$mirror/$download_dir/$download_file"
     $hash -c <<< "$digest $download_file" &>/dev/null || exit
   fi
@@ -59,6 +65,8 @@ function crew-download {
   # mkdir -p "$CREW_FORMULA/$pkg"
   # tar tf "$download_file" | gzip > "$CREW_FORMULA/$pkg/$download_file_with_version.lst.gz"
 
+  success "Download ${download_file}"
+  # return value
   echo "download to: $cache_dir/$download_dir/$download_file"
 }
 
