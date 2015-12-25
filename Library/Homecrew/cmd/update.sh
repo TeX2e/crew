@@ -1,17 +1,15 @@
 #!/bin/bash
 
 function crew-update {
-  if find-workspace; then
-    get-setup-file
-  fi
+  :
 }
 
+
 function download { # <package>
-  local pkg digest digactual
+  local pkg=$1
   local cache_dir=$CREW_CACHE
   local arch_dir=$(uname -m)
   local mirror=$(crew-mirror | sed -e 's,/$,,')
-  local pkg=$1
 
   if (( ! $# )); then
     error "no packages given"
@@ -19,9 +17,7 @@ function download { # <package>
   
   # look for package and save desc file
 
-  if find-workspace; then
-    get-setup-file
-  fi
+  update-setup-file
 
   awk '$1 == pc' RS='\n\n@ ' FS='\n' pc="$pkg" "$cache_dir/$arch_dir/setup.ini" \
     > "$cache_dir/$arch_dir/desc"
@@ -43,7 +39,7 @@ function download { # <package>
   local download_file=$(basename $2)
   
   # check the md5
-  digest=$4
+  local digest=$4
   case ${#digest} in
    32) hash=md5sum    ;;
   128) hash=sha512sum ;;
