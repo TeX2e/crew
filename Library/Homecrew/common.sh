@@ -47,19 +47,17 @@ function wget {
 
 function find-workspace {
   local cache_dir=$CREW_CACHE
-  local arch_dir=$(uname -m)
-  test -e "$cache_dir/$arch_dir" && return true || return false
+  test -e "$cache_dir" && return true || return false
 }
 
 function create-workspace {
   # default working directory and mirror
   local cache_dir=$CREW_CACHE
-  local arch_dir=$(uname -m)
 
-  echo "workspace: $cache_dir/$arch_dir"
+  echo "workspace: $cache_dir"
 
-  mkdir -p "$cache_dir/$arch_dir"
-  cd "$cache_dir/$arch_dir"
+  mkdir -p "$cache_dir"
+  cd "$cache_dir"
 
   if [ -e setup.ini ]; then
     return 0
