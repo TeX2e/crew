@@ -20,9 +20,14 @@ function warn {
 }
 
 function error {
+  local exit_this=true
+  if [[ $1 = -c ]]; then
+    shift
+    exit_this=false
+  fi
   # color:red
   echo -e "\033[31mError\033[m" "$*"
-  exit -1
+  $exit_this && exit -1
 }
 
 function success {
