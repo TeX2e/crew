@@ -36,7 +36,7 @@ function download { # <package>
     error "no packages given"
   fi
 
-  if ! [[ -e "$cache_dir/setup.ini" ]]; then
+  if [[ ! -e "$cache_dir/setup.ini" ]]; then
     error "setup.ini is not found in $cache_dir/"
   fi
   
@@ -71,7 +71,7 @@ function download { # <package>
   mkdir -p "$cache_dir/$download_dir"
   cd "$cache_dir/$download_dir"
 
-  if ! [ -e "$download_file" ] || ! $hash -c <<< "$digest $download_file" &>/dev/null; then
+  if [ ! -e "$download_file" ] || ! $hash -c <<< "$digest $download_file" &>/dev/null; then
     info "fetch $mirror/$download_dir/$download_file"
     wget -O "$download_file" "$mirror/$download_dir/$download_file" | info
     $hash -c <<< "$digest $download_file" &>/dev/null || exit
