@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function get-fullpath {
-  echo $(cd $(dirname $0); pwd)
+  echo $(cd $(dirname $0) && pwd)
 }
 
 # use to tell strong message
