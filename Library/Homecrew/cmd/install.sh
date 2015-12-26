@@ -8,21 +8,23 @@ function crew-install { # <packages>
     mkdir -p "$CREW_FORMULA/$pkg"
     download $pkg | tee /tmp/crew-download
 
-    # pkg.tar.xz must be deployed
+    # download file $pkg_version.tar.xz must be deployed
 
     local download_file=$(cat /tmp/crew-download | awk '/Download/ {print $3}')
-    local pkg_version=${download_file%.tar.xz}
+    local pkg_version=$(extract-version-from $download_file)
     local working_dir="$CREW_FORMULA/$pkg/$pkg_version"
     cd "$working_dir"
     mkdir -p "$CREW_CELLER/$pkg/$pkg_version"
+    mv "$pkg-$pkg_version.tar.xz" "$pkg_version.tar.xz"
 
     # decompress
     xz -cdv "$pkg_version.tar.xz" > "$pkg_version.tar"
     tar -x -C "$CREW_CELLER/$pkg/$pkg_version" -f "$pkg_version.tar"
     tar tf "$pkg_version.tar.xz" > "$pkg_version.lst"
     # tar tf "$pkg_version.tar.xz" | gzip > "$pkg_version.lst.gz"
-
     rm "$pkg_version.tar"
+
+    crew-link $pkg
   done
 }
 
@@ -80,9 +82,14 @@ function download { # <package>
   success "Download ${download_file}"
 
   # download file is put on Formula
-  local pkg_version="${download_file%.tar.xz}"
+  local pkg_version=$(extract-version-from $download_file)
   mkdir -p "$CREW_FORMULA/$pkg/$pkg_version"
   mv "$cache_dir/$download_dir/$download_file" "$CREW_FORMULA/$pkg/$pkg_version/$download_file"
+}
+
+function extract-version-from { # <download-file>
+  local download_file=$1
+  echo $download_file | sed -e 's/'$pkg'-//' -e 's/\.tar\.xz//'
 }
 
 
