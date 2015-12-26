@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function crew-unlink { # <packages>
+  check-packages "$@" || exit
   local pkgs=$@
   local pkg
   for pkg in $pkgs
@@ -10,8 +11,8 @@ function crew-unlink { # <packages>
 }
 
 function remove-sym-link { # <package>
-  echo "$1" > /tmp/crew-sym-link
-  set -- $(cat /tmp/crew-sym-link | awk 'BEGIN { FS="/" } { print $1, $2 }')
+  echo "$1" > /tmp/crew-argument
+  set -- $(cat /tmp/crew-argument | awk 'BEGIN { FS="/" } { print $1, $2 }')
   local pkg=$1
   local pkg_version=$2
 
@@ -50,6 +51,7 @@ function remove-sym-link { # <package>
       print "test -L \"" root "/" $0 "\" && rm \"" root "/" $0 "\""
     }
     END {
+      # reverse
       for (i = dirs_num - 1; i >= 0; i--) {
         print "rmdir " dirs[i], "&>/dev/null"
       }

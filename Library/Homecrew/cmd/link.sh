@@ -1,7 +1,8 @@
 #!/bin/bash
 
 function crew-link { # <packages>
-  local pkgs=$@
+  check-packages "$@" || exit
+  local pkgs="$@"
   local pkg
   for pkg in $pkgs
   do
@@ -10,8 +11,8 @@ function crew-link { # <packages>
 }
 
 function create-sym-link { # <package>[/version]
-  echo "$1" > /tmp/crew-sym-link
-  set -- $(cat /tmp/crew-sym-link | awk 'BEGIN { FS="/" } { print $1, $2 }')
+  echo "$1" > /tmp/crew-argument
+  set -- $(cat /tmp/crew-argument | awk 'BEGIN { FS="/" } { print $1, $2 }')
   local pkg=$1
   local pkg_version=$2
 

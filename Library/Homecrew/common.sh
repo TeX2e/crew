@@ -90,6 +90,7 @@ function update-setup-file {
 }
 
 function check-packages {
+  pks="$@"
   if [[ $pks ]]; then
     return 0
   else
