@@ -38,20 +38,21 @@ function create-sym-link { # <package>[/version]
     error "Package manifest missing, cannot remove $pkg"
   fi
 
-  cat "$pkg_formula/$pkg_version.lst" |\
+  cat "$pkg_formula/$pkg_version.lst" |
   awk '
     /\/$/ {
       print "mkdir -p \"" root "/" $0 "\""
     }
     /[^\/]$/ {
       print "test -L \"" root "/" $0 "\"",
-        "&&", "ln -sf \"" crew_celler "/" $0 "\"", "\"" root "/" $0 "\"",
+        "&&", "ln -sf \"" crew_celler "/" pkg_dir "/" $0 "\"", "\"" root "/" $0 "\"",
         "||", "echo file already exist:", "\"" root "/" $0 "\""
     }
-    ' root="$ROOT_DIR" crew_celler="$CREW_CELLER" |\
+    ' root="$ROOT_DIR" crew_celler="$CREW_CELLER" pkg_dir="$pkg/$pkg_version" |
   sh | tee /tmp/crew-link
 
-  if grep 'file already exist' /tmp/crew-link ; then
+  # check if success
+  if grep -F 'file already exist' /tmp/crew-link ; then
     warn "Some files cannot linked." \
       "if you want to override the original file, type:\n\n" \
       "    crew copy $pkg\n"
