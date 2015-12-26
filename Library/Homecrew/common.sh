@@ -26,7 +26,7 @@ function error {
     exit_this=false
   fi
   # color:red
-  echo -e "\033[31mError\033[m" "$*"
+  echo -e "\033[31;4mError\033[m" "$*"
   $exit_this && exit -1
 }
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function crew-install { # <packages>
+  check-packages "$@" || exit
   local pkgs=$@
   local pkg
   for pkg in $pkgs
