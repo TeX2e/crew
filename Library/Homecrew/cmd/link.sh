@@ -44,8 +44,18 @@ function create-sym-link { # <package>[/version]
       print "mkdir -p \"" root "/" $0 "\""
     }
     /[^\/]$/ {
-      print "ln -sf \"" crew_celler "/" $0 "\"", "\"" root "/" $0 "\""
+      print "test -L \"" root "/" $0 "\"",
+        "&&", "ln -sf \"" crew_celler "/" $0 "\"", "\"" root "/" $0 "\"",
+        "||", "echo file already exist:", "\"" root "/" $0 "\""
     }
     ' root="$ROOT_DIR" crew_celler="$CREW_CELLER" |\
-  sh
+  sh | tee /tmp/crew-link
+
+  if grep 'file already exist' /tmp/crew-link ; then
+    warn "Some files cannot linked." \
+      "if you want to override the original file, type:\n\n" \
+      "    crew copy $pkg\n"
+  else
+    success "Create symbolic links"
+  fi
 }
