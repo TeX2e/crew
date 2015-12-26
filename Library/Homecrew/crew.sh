@@ -2,16 +2,36 @@
 # crew: install tool for Cygwin similar to Mac OS brew
 #
 # The MIT License (MIT)
+# 
+# Copyright (c) 2015 TeX2e.
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 
-ROOT_DIR="$HOME/Documents/pgm/bash/cygwin64"
-CREW_DIR="$ROOT_DIR/usr/local"
-CREW_CELLER="$CREW_DIR/Celler"
-CREW_LIBRARY="$CREW_DIR/Library"
-CREW_CMD="$CREW_LIBRARY/Homecrew/cmd"
-CREW_UTILS="$CREW_LIBRARY/Homecrew/utils"
-CREW_FORMULA="$CREW_LIBRARY/Formula"
-SETUP_DIR="$ROOT_DIR/etc/setup"
-CREW_CACHE="$CREW_DIR/crew-cache"
+export ROOT_DIR="$HOME/Documents/pgm/bash/cygwin64"
+export CREW_DIR="$ROOT_DIR/usr/local"
+export CREW_CELLER="$CREW_DIR/Celler"
+export CREW_LIBRARY="$CREW_DIR/Library"
+export CREW_CMD="$CREW_LIBRARY/Homecrew/cmd"
+export CREW_UTILS="$CREW_LIBRARY/Homecrew/utils"
+export CREW_FORMULA="$CREW_LIBRARY/Formula"
+export SETUP_DIR="$ROOT_DIR/etc/setup"
+export CREW_CACHE="$CREW_DIR/crew-cache"
 
 function include {
   for file in $@; do
