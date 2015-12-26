@@ -14,6 +14,9 @@ function crew-desc { # <packages>
         print
         exit
       }
+      ENDFILE {
+        print "Unable to locate package " pkg
+      }
       ' pkg="$pkg" "$CREW_CACHE/setup.ini"
   done
 }
