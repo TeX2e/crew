@@ -55,7 +55,9 @@ function create-sym-link { # <package>[/version]
     warn "Some files cannot linked." \
       "if you want to override the original file, type:\n\n" \
       "    crew copy $pkg\n"
+    return 1
   else
     success "Create symbolic links"
+    return 0
   fi
 }
