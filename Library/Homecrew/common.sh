@@ -111,3 +111,20 @@ function ask_user {
       echo No  && return 1 ;;
   esac
 }
+
+function progress-bar {
+  if test $# != 2; then
+    error "progress-bar requires two arguments of number"
+  fi
+  # process data
+  let _progress=$(( (${1}*100 / ${2}*100) / 100 ))
+  let _done=$(( (${_progress}*7) / 10 ))
+  let _left=$(( 70 - $_done ))
+  # build progressbar string lengths
+  _fill=$(printf "%${_done}s")
+  _empty=$(printf "%${_left}s")
+  # build progressbar strings
+  # Output example:
+  # ######################################## 100%
+  printf "\r${_fill// /#}${_empty} ${_progress}%%"
+}

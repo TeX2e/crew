@@ -43,7 +43,23 @@ include "$CREW_LIBRARY/Homecrew/common.sh"
 include "$CREW_LIBRARY/Homecrew/cmd/*.sh"
 
 function crew-debug {
-  :
+  progress-bar 2 100
+  sleep 0.1
+  progress-bar 20 100
+  sleep 0.1
+  progress-bar 40 100
+  sleep 0.1
+  progress-bar 50 100
+  sleep 0.1
+  progress-bar 80 100
+  sleep 0.1
+  progress-bar 90 100
+  sleep 0.1
+  progress-bar 94 100
+  sleep 0.1
+  progress-bar 98 100
+  sleep 0.1
+  progress-bar 100 100
 }
 
 
