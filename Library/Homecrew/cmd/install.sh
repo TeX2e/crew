@@ -6,6 +6,12 @@ function crew-install { # <packages>
   local pkg
   for pkg in $pkgs
   do
+    if grep '^'"$pkg"' ' "$SETUP_DIR/installed.db" && ! $FORCE; then
+      warn "Package $pkg is already installed, skipping"
+      echo "if you want to installed force, type:\n\n"
+      echo "    crew --force installed $pkg"
+    fi
+
     mkdir -p "$CREW_FORMULA/$pkg"
     download $pkg | tee /tmp/crew-download
 
@@ -16,15 +22,17 @@ function crew-install { # <packages>
     local working_dir="$CREW_FORMULA/$pkg/$pkg_version"
     cd "$working_dir"
     mkdir -p "$CREW_CELLER/$pkg/$pkg_version"
-    mv "$pkg-$pkg_version.tar.xz" "$pkg_version.tar.xz"
+    if [[ "$download_file" =~ \.tar\.xz$ ]]; then
+      mv "$pkg-$pkg_version.tar.xz" "$pkg_version.tar.xz"
+    elif [[ "$download_file" =~ \.tar\.bz2$ ]]; then
+      mv "$pkg-$pkg_version.tar.bz2" "$pkg_version.tar.bz2"
+    else
+      error "unexpected type to decompress file: $download_file"
+    fi
 
-    # decompress
-    xz -cdv "$pkg_version.tar.xz" > "$pkg_version.tar"
-    tar -x -C "$CREW_CELLER/$pkg/$pkg_version" -f "$pkg_version.tar"
-    tar tf "$pkg_version.tar.xz" > "$pkg_version.lst"
-    # tar tf "$pkg_version.tar.xz" | gzip > "$pkg_version.lst.gz"
-    rm "$pkg_version.tar"
+    decompress "$pkg" "$download_file"
 
+    FORCE=false
     crew-link $pkg
   done
 }
@@ -90,9 +98,8 @@ function download { # <package>
 
 function extract-version-from { # <download-file>
   local download_file=$1
-  echo $download_file | sed -e 's/'$pkg'-//' -e 's/\.tar\.xz//'
+  echo $download_file | sed -e 's/'$pkg'-//' -e 's/\.tar.*//'
 }
-
 
 function sha512sum {
   case `uname` in
@@ -103,3 +110,15 @@ function sha512sum {
   esac
 }
 
+function decompress {
+  local pkg=$1
+  local download_file=$2
+  local pkg_version=$(extract-version-from $download_file)
+  if [[ "$download_file" =~ \.tar\.xz$ ]]; then
+    tar -Jx -C "$CREW_CELLER/$pkg/$pkg_version" -f "$pkg_version.tar.xz"
+    tar tf "$pkg_version.tar.xz" > "$pkg_version.lst"
+  elif [[ "$download_file" =~ \.tar\.bz2$ ]]; then
+    tar -jx -C "$CREW_CELLER/$pkg/$pkg_version" -f "$pkg_version.tar.bz2"
+    tar tf "$pkg_version.tar.bz2" > "$pkg_version.lst"
+  fi
+}
