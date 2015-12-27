@@ -83,8 +83,8 @@ function download { # <package>
   cd "$cache_dir/$download_dir"
 
   if [ ! -e "$download_file" ] || ! $hash -c <<< "$digest $download_file" &>/dev/null; then
-    info "fetch $mirror/$download_dir/$download_file"
-    wget -O "$download_file" "$mirror/$download_dir/$download_file" | info
+    debug "fetch $mirror/$download_dir/$download_file"
+    wget -O "$download_file" "$mirror/$download_dir/$download_file"
     $hash -c <<< "$digest $download_file" &>/dev/null || exit
   fi
 

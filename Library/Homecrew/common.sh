@@ -4,19 +4,19 @@ function get-fullpath {
   echo $(cd $(dirname $0) && pwd)
 }
 
-# use to tell strong message
-function notice {
-  echo "[Notice]" "$*"
+function debug {
+  (( $DEBUG )) && return
+  echo "$*"
 }
 
-# use to tell weak message
-function info {
-  echo "[Info]" "$*"
+function red {
+  echo -ne "\033[31m$*\033[m"
 }
-
-function warn {
-  # color:yellow
-  echo -e "\033[33mWarning\033[m" "$*"
+function yellow {
+  echo -ne "\033[33m$*\033[m"
+}
+function green {
+  echo -ne "\033[32m$*\033[m"
 }
 
 function error {
@@ -25,14 +25,16 @@ function error {
     shift
     exit_this=false
   fi
-  # color:red
-  echo -e "\033[31;4mError\033[m" "$*"
+  red "Error"; echo " $*"
   $exit_this && exit -1
 }
 
+function warn {
+  yellow "Warning"; echo " $*"
+}
+
 function success {
-  # color:green
-  echo -e "\033[32mSuccess\033[m" "$*"
+  green "Success"; echo " $*"
 }
 
 function wget {
@@ -69,7 +71,7 @@ function create-workspace {
 function get-setup-file {
   local mirror=$(crew-mirror | sed -e 's,/$,,')
   local arch=$(uname -m)
-  info "fetch $mirror/$arch/setup.bz2"
+  debug "fetch $mirror/$arch/setup.bz2"
   mv setup.ini setup.ini-save &> /dev/null
   wget -N "$mirror/$arch/setup.bz2"
   if [ -e setup.bz2 ]; then
@@ -99,3 +101,13 @@ function check-packages {
   fi
 }
 
+function ask_user {
+  local question=$1
+  read -p "$question (y/n) " answer
+  case ${answer:0:1} in
+    y|Y )
+      echo Yes && return 0 ;;
+    * )
+      echo No  && return 1 ;;
+  esac
+}

@@ -2,6 +2,7 @@
 
 function crew-override { # <packages>
   check-packages "$@" || exit
+  ask_user "this operation cannot be redone. are you sure?" || exit
   local pkgs="$@"
   local pkg
   for pkg in $pkgs
@@ -42,7 +43,9 @@ function override-original { # <package>[/version]
   cd "$working_dir"
   local download_file=$(ls | grep '\.tar\.xz\|\.tar\.bz2' | head -1)
   
-  decompress_from_root "$pkg" "$download_file"
+  decompress_at_root "$pkg" "$download_file"
+
+  success "Override original package: $pkg"
 }
 
 function decompress_at_root {
