@@ -38,20 +38,24 @@ function override-original { # <package>[/version]
     error "Package manifest missing, cannot remove $pkg"
   fi
 
-  # cat "$pkg_formula/$pkg_version.lst" |
-  # awk '
-  #   /\/$/ {
-  #     print "mkdir -p \"" root "/" $0 "\""
-  #   }
-  #   /[^\/]$/ {
-  #     print "cp", "\"" crew_celler "/" pkg_dir "/" $0 "\"", "\"" root "/" $0 "\""
-  #   }
-  #   ' root="$ROOT_DIR" crew_celler="$CREW_CELLER" pkg_dir="$pkg/$pkg_version" #|
-  # # sh
-
   local working_dir="$CREW_FORMULA/$pkg/$pkg_version"
   cd "$working_dir"
-  xz -cdv "$pkg_version.tar.xz" > "$pkg_version.tar"
-  tar -x -C "$ROOT_DIR/" -f "$pkg_version.tar"
-  rm "$pkg_version.tar"
+  local download_file=$(ls | grep '\.tar\.xz\|\.tar\.bz2' | head -1)
+  
+  decompress_from_root "$pkg" "$download_file"
+}
+
+function decompress_at_root {
+  local pkg=$1
+  local download_file=$2
+  local pkg_version=$(extract-version-from $download_file)
+  if [[ "$download_file" =~ \.tar\.xz$ ]]; then
+    tar -Jx -C "$ROOT_DIR" -f "$pkg_version.tar.xz"
+    tar tf "$pkg_version.tar.xz" > "$pkg_version.lst"
+  elif [[ "$download_file" =~ \.tar\.bz2$ ]]; then
+    tar -jx -C "$ROOT_DIR" -f "$pkg_version.tar.bz2"
+    tar tf "$pkg_version.tar.bz2" > "$pkg_version.lst"
+  else
+    error "unexpected extention: $download_file"
+  fi
 }
