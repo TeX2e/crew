@@ -48,16 +48,11 @@ function crew-debug {
 
 
 SUBCOMMAND=""
-FORCE=false
 INITIAL_ARGS=( "$@" )
 ARGS=()
 while [ $# -gt 0 ]
 do
   case "$1" in
-  --force)
-    FORCE=true
-    shift
-    ;;
   --help)
     crew-help
     exit 0
