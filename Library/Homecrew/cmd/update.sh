@@ -4,7 +4,7 @@ function crew-update {
   update-setup-file
 
   # take diff
-  diff --speed-large-files \
+  diff \
     <(
       grep '^@\|^version:' $CREW_CACHE/setup.ini-save |
       awk 'BEGIN { RS = "\n@ " } { print $1, $3, "\n" }'
@@ -15,13 +15,23 @@ function crew-update {
     ) |
   awk '
     BEGIN {
-      print "==> Updated Formulae"
+      output[cnt] = "==> Updated Formulae"
+      cnt++
     }
-    /^</ {
-      printf "%s %s -> ", $2, $3
+    /^< [^\n]/ {
+      output[cnt++] = $2 " " $3 " -> "
     }
-    /^>/ {
-      print $3
+    /^> [^\n]/ {
+      output[cnt-1] = output[cnt-1] $3
+    }
+    END {
+      if (cnt == 1) {
+        print "Already up-to-date."
+      } else {
+        for (i in output) {
+          print output[i]
+        }
+      }
     }
     '
 }
