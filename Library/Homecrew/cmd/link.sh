@@ -44,18 +44,23 @@ function create-sym-link { # <package>[/version]
       print "mkdir -p \"" root "/" $0 "\""
     }
     /[^\/]$/ {
-      print "test -L \"" root "/" $0 "\"",
-        "&&", "ln -sf \"" crew_celler "/" pkg_dir "/" $0 "\"", "\"" root "/" $0 "\"",
-        "||", "echo file already exist:", "\"" root "/" $0 "\""
+      origin_file = "\"" crew_celler "/" pkg_dir "/" $0 "\""
+      symlink_file = "\"" root "/" $0 "\""
+      create_link = "ln -sf " origin_file " " symlink_file
+      print "",
+        "if", "test -L", symlink_file, "||", "test ! -e", symlink_file "; then",
+          create_link ";",
+        "else",
+          "echo file already exist:", root "/" $0, ";",
+        "fi;"
     }
-    ' root="$ROOT_DIR" crew_celler="$CREW_CELLER" pkg_dir="$pkg/$pkg_version" #|
-  #sh | tee /tmp/crew-link
-  exit
+    ' root="$ROOT_DIR" crew_celler="$CREW_CELLER" pkg_dir="$pkg/$pkg_version" |
+  sh &> /tmp/crew-link
 
   # check if success
-  if grep -F 'file already exist' /tmp/crew-link ; then
+  if grep -F 'file already exist:' /tmp/crew-link &>/dev/null; then
     warn "Some files cannot linked." \
-      "if you want to override the original file, type:\n\n" \
+      "If you want to override the original file, type:\n\n" \
       "    crew override $pkg\n"
     return 1
   else
