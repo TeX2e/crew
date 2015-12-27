@@ -48,14 +48,14 @@ function crew-debug {
 
 
 SUBCOMMAND=""
-DRY_RUN=false
+FORCE=false
 INITIAL_ARGS=( "$@" )
 ARGS=()
 while [ $# -gt 0 ]
 do
   case "$1" in
-  --dry-run)
-    DRY_RUN=1
+  --force)
+    FORCE=true
     shift
     ;;
   --help)
