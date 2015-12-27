@@ -27,7 +27,7 @@ function crew-install { # <packages>
     elif [[ "$download_file" =~ \.tar\.bz2$ ]]; then
       mv "$pkg-$pkg_version.tar.bz2" "$pkg_version.tar.bz2"
     else
-      error "unexpected type to decompress file: $download_file"
+      error "unexpected extention: $download_file"
     fi
 
     decompress "$pkg" "$download_file"
@@ -120,5 +120,7 @@ function decompress {
   elif [[ "$download_file" =~ \.tar\.bz2$ ]]; then
     tar -jx -C "$CREW_CELLER/$pkg/$pkg_version" -f "$pkg_version.tar.bz2"
     tar tf "$pkg_version.tar.bz2" > "$pkg_version.lst"
+  else
+    error "unexpected extention"
   fi
 }
