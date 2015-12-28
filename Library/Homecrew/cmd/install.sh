@@ -6,10 +6,10 @@ function crew-install { # <packages>
   local pkg
   for pkg in $pkgs
   do
-    if grep '^'"$pkg"' ' "$SETUP_DIR/installed.db" &>/dev/null; then
+    if [ ! $FORCE ] && grep '^'"$pkg"' ' "$SETUP_DIR/installed.db" &>/dev/null; then
       error "Package $pkg is already installed at default, skipping"
     fi
-    if (ls "$CREW_FORMULA/" | grep '^'"$pkg") &>/dev/null; then
+    if [ ! $FORCE ] && (ls "$CREW_FORMULA/" | grep '^'"$pkg") &>/dev/null; then
       error "Package $pkg is already installed, skipping"
     fi
 
@@ -32,8 +32,12 @@ function crew-install { # <packages>
     fi
 
     decompress "$pkg" "$download_file"
-
     crew-link $pkg
+
+    local requires="$(crew-deps $pkg | awk 'NR == 1 { next } { print }')"
+    for req_pkg in $requires; do
+      echo "require: $req_pkg"
+    done
   done
 }
 
