@@ -24,16 +24,16 @@ function error {
     shift
     exit_this=false
   fi
-  red "Error"; echo " $*"
+  red "Error"; echo -e " $*"
   $exit_this && exit -1
 }
 
 function warn {
-  yellow "Warning"; echo " $*"
+  yellow "Warning"; echo -e " $*"
 }
 
 function success {
-  green "Success"; echo " $*"
+  green "Success"; echo -e " $*"
 }
 
 function wget {
