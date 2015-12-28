@@ -6,10 +6,11 @@ function crew-install { # <packages>
   local pkg
   for pkg in $pkgs
   do
-    if grep '^'"$pkg"' ' "$SETUP_DIR/installed.db" && ! $FORCE; then
-      warn "Package $pkg is already installed, skipping"
-      echo "if you want to installed force, type:\n\n"
-      echo "    crew --force installed $pkg"
+    if grep '^'"$pkg"' ' "$SETUP_DIR/installed.db" &>/dev/null; then
+      error "Package $pkg is already installed at default, skipping"
+    fi
+    if (ls "$CREW_FORMULA/" | grep '^'"$pkg") &>/dev/null; then
+      error "Package $pkg is already installed, skipping"
     fi
 
     mkdir -p "$CREW_FORMULA/$pkg"
@@ -32,7 +33,6 @@ function crew-install { # <packages>
 
     decompress "$pkg" "$download_file"
 
-    FORCE=false
     crew-link $pkg
   done
 }
