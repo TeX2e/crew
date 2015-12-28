@@ -60,8 +60,8 @@ function create-sym-link { # <package>[/version]
   # check if success
   if grep -F 'file already exist:' /tmp/crew-link &>/dev/null; then
     warn "Some files cannot linked." \
-      "If you want to override the original file, type:\n\n" \
-      "    crew override $pkg\n"
+      "If you want to override the original, type:\n" \
+      "    crew override $pkg"
     return 1
   else
     success "Create symbolic links"
