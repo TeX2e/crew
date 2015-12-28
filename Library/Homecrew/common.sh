@@ -104,6 +104,20 @@ function check-packages {
   fi
 }
 
+# returns ture or false
+function already-installed { # <package>
+  local pkg=$1
+  (ls "$CREW_FORMULA/" | grep '^'"$pkg") &>/dev/null
+  return $?
+}
+
+# returns ture or false
+function already-installed-at-default { # <package>
+  local pkg=$1
+  grep '^'"$pkg"' ' "$SETUP_DIR/installed.db" &>/dev/null
+  return $?
+}
+
 function ask_user {
   local question=$1
   read -p "$question (y/n) " answer

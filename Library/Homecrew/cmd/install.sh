@@ -6,11 +6,11 @@ function crew-install { # <packages>
   local pkg
   for pkg in $pkgs
   do
-    if [ ! $FORCE ] && grep '^'"$pkg"' ' "$SETUP_DIR/installed.db" &>/dev/null; then
-      error "Package $pkg is already installed at default, skipping"
-    fi
-    if [ ! $FORCE ] && (ls "$CREW_FORMULA/" | grep '^'"$pkg") &>/dev/null; then
+    if [ ! $FORCE ] && already-installed "$pkg"; then
       error "Package $pkg is already installed, skipping"
+    fi
+    if [ ! $FORCE ] && already-installed-at-default "$pkg"; then
+      error "Package $pkg is already installed at default, skipping"
     fi
 
     mkdir -p "$CREW_FORMULA/$pkg"
