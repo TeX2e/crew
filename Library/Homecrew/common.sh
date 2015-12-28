@@ -71,6 +71,10 @@ function get-setup-file {
   local mirror=$(crew-mirror | sed -e 's,/$,,')
   local arch=$(uname -m)
   debug "fetch $mirror/$arch/setup.bz2"
+
+  mkdir -p "$CREW_CACHE/"
+  cd "$CREW_CACHE/"
+
   mv setup.ini setup.ini-save &> /dev/null
   wget -N "$mirror/$arch/setup.bz2"
   if [ -e setup.bz2 ]; then
