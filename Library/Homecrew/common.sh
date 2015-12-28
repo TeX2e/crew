@@ -5,8 +5,7 @@ function get-fullpath {
 }
 
 function debug {
-  (( $DEBUG )) && return
-  echo "$*"
+  [ $DEBUG ] && echo "$*"
 }
 
 function red {
@@ -39,7 +38,7 @@ function success {
 
 function wget {
   if command wget -h &>/dev/null; then
-    command wget "$@"
+    command wget --quiet --show-progress "$@"
   else
     warn "wget is not installed, using lynx as fallback"
     set "${*: -1}"
@@ -49,7 +48,7 @@ function wget {
 
 function find-workspace {
   local cache_dir=$CREW_CACHE
-  test -e "$cache_dir" && return true || return false
+  test -e "$cache_dir" && return 0 || return 1
 }
 
 function create-workspace {
