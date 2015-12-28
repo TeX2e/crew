@@ -8,7 +8,7 @@ BEGIN {
   print leven(str1_ary, str2_ary)
 }
 
-# compute a levenshtein distance of 2 strings
+# compute a levenshtein distance between 2 strings
 # example:
 # 
 #   split("bcaabc", str1_ary, "")
