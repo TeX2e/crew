@@ -8,7 +8,7 @@ crew -- package manager for Cygwin similar to brew for Mac OS
 
 SYNOPSIS
 --------
-crew <command\> <packages\>
+`crew <command> <packages>`
 
 ESSENTIAL COMMANDS
 ------------------
@@ -21,7 +21,7 @@ ESSENTIAL COMMANDS
     - Fetch the newest version of setup.ini
 - `list`
     - List all installed packages
-- `search` [wip]
+- `search text|/text/` [wip]
     - \--
 
 COMMANDS
