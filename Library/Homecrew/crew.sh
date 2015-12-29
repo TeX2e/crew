@@ -1,5 +1,5 @@
 #!/bin/bash
-# crew: install tool for Cygwin similar to Mac OS brew
+# crew -- package manager for Cygwin similar to brew for Mac OS
 #
 # The MIT License (MIT)
 # 
