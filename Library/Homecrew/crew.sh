@@ -2,19 +2,19 @@
 # crew -- package manager for Cygwin similar to brew for Mac OS
 #
 # The MIT License (MIT)
-# 
+#
 # Copyright (c) 2015 TeX2e.
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,6 +22,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+
+function crew-debug {
+  :
+}
 
 export ROOT_DIR="$HOME/Documents/pgm/bash/cygwin64"
 export CREW_DIR="$ROOT_DIR/usr/local"
@@ -41,27 +45,6 @@ function include {
 
 include "$CREW_LIBRARY/Homecrew/common.sh"
 include "$CREW_LIBRARY/Homecrew/cmd/*.sh"
-
-function crew-debug {
-  progress-bar 2 100
-  sleep 0.1
-  progress-bar 20 100
-  sleep 0.1
-  progress-bar 40 100
-  sleep 0.1
-  progress-bar 50 100
-  sleep 0.1
-  progress-bar 80 100
-  sleep 0.1
-  progress-bar 90 100
-  sleep 0.1
-  progress-bar 94 100
-  sleep 0.1
-  progress-bar 98 100
-  sleep 0.1
-  progress-bar 100 100
-}
-
 
 SUBCOMMAND=""
 INITIAL_ARGS=( "$@" )
